@@ -1,0 +1,46 @@
+.global-cache-update2read:
+  cache:
+    key:
+      files:
+        - yarn.lock
+        - package-lock.json
+    paths:
+      - node_modules/
+      - .yarn
+
+.global-cache-only2read:
+  cache:
+    key:
+      files:
+        - yarn.lock
+        - package-lock.json
+    policy: pull
+    paths:
+      - node_modules/
+      - .yarn
+
+.build-before-scripts:
+  before_script:
+    - export CI_ENVIRONMENT_NAME=$(echo $CI_COMMIT_MESSAGE | sed 's/.*@\(.*\)__.*/\1/')
+    - export REFRESH_URL="$(eval echo \$REFRESH_URL_${CI_ENVIRONMENT_NAME})"
+    - export BUCKET_CONTEXT="${BUCKET_CONTEXT:-$(eval echo \$BUCKET_CONTEXT_${CI_ENVIRONMENT_NAME})}"
+    - export BUCKET_SUB_CONTEXT="$( [ "$MODE" = "multiple" ] && echo "" || echo "$CI_ENVIRONMENT_NAME" )"
+    - printenv
+    
+
+variables:
+  NODE_VERSION: 14.16.1
+  YARN_REGISTRY: https://repos.saybot.net/repository/alo7npm/
+  FRONTEND_PATH_PUBLIC: /
+  FRONTEND_PATH_BUILD: build
+
+  # multple bucket:
+  # BUCKET_CONTEXT: biotech-site-predict-frontend/awesome-ci
+  # BUCKET_CONTEXT_beta: web-alo7-com/awesome-ci/simulate-multiple-bucket/bucket1
+  # BUCKET_CONTEXT_production: web-alo7-com/awesome-ci/simulate-multiple-bucket/bucket
+
+  # refresh urls:
+  REFRESH_URL_beta: https://beta.biotechpredict.com
+  REFRESH_URL_staging: https://staging.biotechpredict.com
+  REFRESH_URL_sandbox: https://sandbox.biotechpredict.com
+  REFRESH_URL_production: https://www.biotechpredict.com

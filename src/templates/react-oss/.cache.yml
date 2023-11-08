@@ -1,0 +1,16 @@
+.cache:
+  stage: build
+  image: node:$NODE_VERSION-slim
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@cache__/
+
+  extends:
+    - .global-cache-update2read
+
+  script:
+    - set -e
+    - yarn install --silent --frozen-lockfile
+
+cache-yarn:
+  extends: .cache

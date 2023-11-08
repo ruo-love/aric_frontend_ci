@@ -1,0 +1,31 @@
+.global-cache-update2read:
+  cache:
+    key:
+      files:
+        - yarn.lock
+        - package-lock.json
+    paths:
+      - node_modules/
+      - .yarn
+
+.global-cache-only2read:
+  cache:
+    key:
+      files:
+        - yarn.lock
+        - package-lock.json
+    policy: pull
+    paths:
+      - node_modules/
+      - .yarn
+
+.build-before-scripts:
+  before_script:
+    - set -e
+    - printenv
+
+variables:
+  NODE_VERSION: 14.16.1
+  BUCKET_CONTEXT: biotech-site-predict-frontend/awesome-ci
+  FRONTEND_PATH_PUBLIC: /
+  FRONTEND_PATH_BUILD: build

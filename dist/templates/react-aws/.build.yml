@@ -1,0 +1,23 @@
+.build: &BUILD
+  stage: build
+  image: node:$NODE_VERSION
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /@build/
+      - $CI_COMMIT_MESSAGE =~ /@beta/
+      - $CI_COMMIT_MESSAGE =~ /@prod/
+  extends: 
+    - .global-cache-update2read
+  
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 week
+
+  script:
+    - set -e
+    - npm i --registry=https://repos.saybot.net/repository/alo7npm/
+    - npm run build
+
+build:
+  extends: .build

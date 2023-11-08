@@ -1,0 +1,54 @@
+.global-cache-update2read:
+  cache:
+    key:
+      files:
+        # - yarn.lock
+        - package-lock.json
+    paths:
+      - node_modules/
+
+.global-cache-only2read:
+  cache:
+    key:
+      files:
+        # - yarn.lock
+        - package-lock.json
+    policy: pull
+    paths:
+      - node_modules/
+
+# awesome-ci-xyz must not be variable
+.vars-develop:
+  variables:
+    FRONTEND_HOSTS: awesome-ci-xyz.alpha.saybot.net
+
+.vars-beta:
+  variables:
+    FRONTEND_HOSTS: awesome-ci-xyz.beta.saybot.net
+
+.vars-staging:
+  variables:
+    FRONTEND_HOSTS: awesome-ci-xyz.staging.saybot.net
+
+.vars-master:
+  variables:
+    FRONTEND_HOSTS: awesome-ci-xyz.alo7.com
+
+.only-branches:
+  only:
+    - master
+    - main
+    - beta
+    - staging
+    - develop
+    - dev
+
+variables:
+  NODE_VERSION: 14.16.1
+  FRONTEND_CI_VERSION: __VERSION__
+  FRONTEND_CI_DIR: node_modules/@jswork/frontend-ci/dist
+  FRONTEND_PROJECT_NAME: awesome-ci-xyz
+  FRONTEND_PATH_PUBLIC: /
+  FRONTEND_PATH_BUILD: build
+
+

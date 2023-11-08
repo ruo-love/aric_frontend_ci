@@ -1,0 +1,51 @@
+.deploy: &DEPLOY
+  stage: deploy
+  image: registry.git.saybot.net/ops/k8s-deploy:0.5.1
+  dependencies: []
+  # use cache
+  cache:
+    key: $FRONTEND_CI_KEY
+    paths:
+      - node_modules/@jswork/frontend-ci/
+  environment:
+    name: $CI_COMMIT_REF_NAME
+    url: https://$FRONTEND_HOSTS$FRONTEND_PATH_PUBLIC
+  variables: &DEPLOY_VARIABLES
+    IMAGE_REPOSITORY: $ALIYUN_CI_REGISTRY_IMAGE/cat/sgrna-frontend/$CI_COMMIT_REF_NAME
+    IMAGE_TAG: $CI_COMMIT_SHA
+    IMAGE_CREDENTIALS_USERNAME: $DEPLOY_TOKEN_USERNAME
+    IMAGE_CREDENTIALS_PASSWORD: $DEPLOY_TOKEN_PASSWORD
+    INGRESS_HOSTS: "[$FRONTEND_HOSTS]"
+    INGRESS_PATH: $FRONTEND_PATH_PUBLIC
+    INGRESS_HTTPS: "false"
+    # INGRESS_CLASS: ${INGRESS_CLASS:-nginx}
+    RELEASE_NAME: ${KUBE_NAMESPACE}-${CI_COMMIT_REF_NAME}-ali
+  script:
+    - set -x # helm repo add alo7 https://alo7-charts.s3.cn-northwest-1.amazonaws.com.cn
+    - printenv
+    - echo "envsubt < $FRONTEND_CI_DIR/ci/.helm-values.yaml.tmpl | helm --tiller-namespace $KUBE_NAMESPACE upgrade --install --wait --namespace=$KUBE_NAMESPACE -f - $RELEASE_NAME $FRONTEND_CI_DIR/ci/general-frontend"
+    - envsubst < $FRONTEND_CI_DIR/ci/.helm-values.yaml.tmpl | helm --tiller-namespace $KUBE_NAMESPACE upgrade --install --wait --namespace=$KUBE_NAMESPACE -f - $RELEASE_NAME $FRONTEND_CI_DIR/ci/general-frontend
+
+deploy:master:
+  <<: *DEPLOY
+  extends: .vars-master
+  only:
+    - master
+
+deploy:develop:
+  <<: *DEPLOY
+  extends: .vars-develop
+  only:
+    - develop
+
+deploy:beta:
+  <<: *DEPLOY
+  extends: .vars-beta
+  only:
+    - beta
+
+deploy:staging:
+  <<: *DEPLOY
+  extends: .vars-staging
+  only:
+    - staging

@@ -1,0 +1,9 @@
+# Current version is: 1.0.145
+
+stages:
+  - build
+
+include:
+  - local: /dist/templates/weixin-app/.vars.yml
+  - local: /dist/templates/weixin-app/.cache.yml
+  - local: /dist/templates/weixin-app/.build-only.yml

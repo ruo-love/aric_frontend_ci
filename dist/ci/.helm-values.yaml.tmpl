@@ -1,0 +1,16 @@
+nginx:
+  image:
+    repository: $IMAGE_REPOSITORY
+    tag: $IMAGE_TAG
+imageCredentials:
+  username: $IMAGE_CREDENTIALS_USERNAME
+  password: $IMAGE_CREDENTIALS_PASSWORD
+ingress:
+  hosts: $INGRESS_HOSTS
+  path: $INGRESS_PATH
+  https: $INGRESS_HTTPS
+  annotations:
+    kubernetes.io/ingress.class: $INGRESS_CLASS
+gitlab:
+  app: $CI_PROJECT_PATH_SLUG
+  env: $CI_ENVIRONMENT_SLUG

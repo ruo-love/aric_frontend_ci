@@ -1,0 +1,25 @@
+# 这里是一个临时的兼容方案，等后面稳定后，可以直接删除此方案
+{{- if .Values.ingress.compatible2old -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: public-nginx
+    nginx.ingress.kubernetes.io/permanent-redirect: https://cloud.aigene.org.cn/
+  labels:
+    app: bio-platform-frontend-main-ali-general-saybot
+  name: bio-platform-frontend-main-ali-general-saybot
+  namespace: crispr
+spec:
+  rules:
+  - host: sandbox-bio-platform.saybot.net
+    http:
+      paths:
+      - backend:
+          service:
+            name: bio-platform-frontend-main-ali-general-frontend
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+{{- end }}

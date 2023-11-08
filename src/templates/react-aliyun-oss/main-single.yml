@@ -1,0 +1,13 @@
+# Current version is: __VERSION__
+
+stages:
+  - build
+  - deploy
+  - refresh
+
+include:
+  - local: /src/templates/react-aliyun-oss/shared/.vars.yml
+  - local: /src/templates/react-aliyun-oss/shared/.cache.yml
+  - local: /src/templates/react-aliyun-oss/shared/.refresh.yml
+  - local: /src/templates/react-aliyun-oss/shared/.build.yml
+  - local: /src/templates/react-aliyun-oss/shared/.deploy.yml

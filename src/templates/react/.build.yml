@@ -1,0 +1,24 @@
+.build: &BUILD
+  stage: build
+  extends: .only-main
+  image: node:$NODE_VERSION
+  before_script:
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 year
+  script:
+    - set -e
+    - echo "npm run build:$CI_COMMIT_REF_SLUG"
+    - npm i --registry=https://repos.saybot.net/repository/alo7npm/
+    - npm run build:$CI_COMMIT_REF_SLUG
+
+# build:
+#   extends: .build
+
+build:
+  <<: *BUILD

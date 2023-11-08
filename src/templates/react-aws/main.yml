@@ -1,0 +1,9 @@
+stages:
+  - build
+  - deploy
+
+include:
+  - local: /tpls/templates/react-aws/.vars.yml
+  - local: /tpls/templates/react-aws/.build.yml
+  - local: /tpls/templates/react-aws/.deploy.yml
+  # - local: /tpls/templates/react-aws/.debug.yml

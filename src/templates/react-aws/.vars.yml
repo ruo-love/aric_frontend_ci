@@ -1,0 +1,32 @@
+.global-cache-update2read:
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - node_modules/
+
+.global-cache-only2read:
+  cache:
+    key:
+      files:
+        - package.json
+    policy: pull
+    paths:
+      - node_modules/
+
+# awesome-ci-xyz must not be variable
+.vars-beta:
+  variables:
+    bucket_context: course-assets.saybot.net/kellis/awesome-ci-xyz
+
+.vars-production:
+  variables:
+    bucket_context: course-assets.alo7.com/kellis/awesome-ci-xyz
+
+variables:
+  NODE_VERSION: 14.16.1
+  FRONTEND_PATH_PUBLIC: /
+  FRONTEND_PATH_BUILD: build
+
+

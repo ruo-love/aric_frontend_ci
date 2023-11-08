@@ -1,0 +1,27 @@
+stages:
+  - build
+
+.build: &build
+  image: node:$NODE_VERSION-slim
+  stage: build
+  extends:
+    - .global-cache-only2read
+  script:
+    - npm run build:$CI_ENVIRONMENT_NAME || echo "Skip build" || exit 0
+    - node .ci.js 3
+
+build-beta:
+  <<: *build
+  environment:
+    name: beta
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@beta__/
+
+build-production:
+  <<: *build
+  environment:
+    name: production
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@production__/

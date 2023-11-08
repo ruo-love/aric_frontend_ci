@@ -1,0 +1,14 @@
+# Current version is: 1.0.145
+stages:
+  - build
+  - publish
+  - deploy
+
+
+include:
+  - local: /dist/templates/react-k8s/.vars.yml
+  - local: /dist/templates/react-k8s/.build.yml
+  - local: /dist/templates/react-k8s/.publish.yml
+  - local: /dist/templates/react-k8s/.deploy.yml
+
+

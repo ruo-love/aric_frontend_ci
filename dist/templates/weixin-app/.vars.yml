@@ -1,0 +1,23 @@
+.global-cache-update2read:
+  cache:
+    key:
+      files:
+        - yarn.lock
+        - package-lock.json
+    paths:
+      - node_modules/
+      - .yarn
+
+.global-cache-only2read:
+  cache:
+    key:
+      files:
+        - yarn.lock
+        - package-lock.json
+    policy: pull
+    paths:
+      - node_modules/
+      - .yarn
+
+variables:
+  NODE_VERSION: 16.18.0

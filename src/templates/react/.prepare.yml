@@ -1,0 +1,16 @@
+.prepare: &PREPARE
+  stage: prepare
+  extends: .only-main
+  image: node:$NODE_VERSION
+  cache:
+    key: $FRONTEND_CI_KEY
+    paths:
+      - node_modules/@jswork/frontend-ci/
+
+prepare:
+  <<: *PREPARE
+  when: manual
+  script:
+    - npm i @jswork/frontend-ci --registry=https://repos.saybot.net/repository/alo7npm/
+    - set -x
+    - ls -alh node_modules/@jswork/frontend-ci

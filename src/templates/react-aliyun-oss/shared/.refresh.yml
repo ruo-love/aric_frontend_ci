@@ -1,0 +1,61 @@
+.refresh:
+  image: abcfy2/aliyun-cli:3.0.121
+  stage: refresh
+  extends:
+    - .build-before-scripts
+  script:
+    - |
+      # debug
+      set -e
+      printenv
+
+      # refresh when $REFRESH_URL set
+      if [ -z "$REFRESH_URL" ]; then
+        echo "REFRESH_URL not set, skip refresh"
+        exit 0
+      else
+        echo "REFRESH_URL set, start refresh"
+        aliyun cdn RefreshObjectCaches --ObjectPath $REFRESH_URL
+
+        # wait for refresh, print previewURL:
+        echo "Waiting for refresh to complete..."
+        echo "PreviewURL: $REFRESH_URL"
+      fi
+
+
+refresh-beta:
+  extends: .refresh
+  environment:
+    name: beta
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /(__@beta__|__@refresh-beta__)/
+  when: manual
+
+refresh-staging:
+  extends: .refresh
+  environment:
+    name: staging
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /(__@staging__|__@refresh-staging__)/
+  when: manual
+
+
+refresh-sandbox:
+  extends: .refresh
+  environment:
+    name: sandbox
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /(__@sandbox__|__@refresh-sandbox__)/
+  when: manual
+
+refresh-production:
+  extends: .refresh
+  environment:
+    name: production
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /(__@production__|__@refresh-production__)/
+  when: manual

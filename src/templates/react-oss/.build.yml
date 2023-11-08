@@ -1,0 +1,29 @@
+.build: &BUILD
+  stage: build
+  image: node:$NODE_VERSION-slim
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@build__/
+      - $CI_COMMIT_MESSAGE =~ /__@beta__/
+      - $CI_COMMIT_MESSAGE =~ /__@staging__/
+      - $CI_COMMIT_MESSAGE =~ /__@sandbox__/
+      - $CI_COMMIT_MESSAGE =~ /__@production__/
+
+  extends:
+    - .global-cache-only2read
+    - .build-before-scripts
+
+  artifacts:
+    paths:
+      - $FRONTEND_PATH_BUILD/
+    expire_in: 1 week
+
+  script:
+    - set -e
+    - unset CI
+    - yarn --version
+    # - yarn install --registry=https://repos.saybot.net/repository/alo7npm/ --slient
+    - yarn build
+
+build:
+  extends: .build

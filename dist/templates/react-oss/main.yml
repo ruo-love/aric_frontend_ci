@@ -1,0 +1,14 @@
+# Current version is: 1.0.145
+
+stages:
+  - build
+  - deploy
+  - upload
+  - refresh
+
+include:
+  - local: /dist/templates/react-oss/.vars.yml
+  - local: /dist/templates/react-oss/.cache.yml
+  - local: /dist/templates/react-oss/.build.yml
+  - local: /dist/templates/react-oss/.deploy.yml
+  - local: /dist/templates/react-oss/.refresh.yml

@@ -1,0 +1,16 @@
+# Current version is: __VERSION__
+# 1. 上传代码到 oss_bucket
+# 2. build 命令 yarn build
+
+stages:
+  - build
+  - deploy
+  - refresh
+
+include:
+  - local: /src/templates/react-aliyun-oss/shared/.vars.yml
+  - local: /src/templates/react-aliyun-oss/shared/.cache.yml
+  - local: /src/templates/react-aliyun-oss/shared/.refresh.yml
+  - local: /src/templates/react-aliyun-oss/shared/.build.yml
+  - local: /src/templates/react-aliyun-oss/shared/.deploy.yml
+  - local: /src/templates/react-aliyun-oss/multiple-bucket/.vars.yml

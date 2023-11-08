@@ -1,0 +1,16 @@
+node_modules
+bower_components
+coverage
+npm-debug.log
+yarn.lock
+package-lock.json
+.DS_Store
+
+
+# vscode
+.vscode
+.history
+.idea
+
+# python cache
+__pycache__

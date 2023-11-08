@@ -1,0 +1,40 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "general-frontend.fullname" . -}}
+{{- $ingressPath := .Values.ingress.path -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "general-frontend.name" . }}
+    chart: {{ template "general-frontend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
+{{- if .Values.ingress.https }}
+    kubernetes.io/tls-acme: "true"
+{{- end }}
+{{- with .Values.ingress.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.ingress.https }}
+  tls:
+    - hosts:
+      {{- range .Values.ingress.hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: cert-{{ $fullName | trunc 58 }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: http
+  {{- end }}
+{{- end }}

@@ -1,0 +1,9 @@
+# Current version is: __VERSION__
+
+stages:
+  - build
+
+include:
+  - local: /src/templates/weixin-app/.vars.yml
+  - local: /src/templates/weixin-app/.cache.yml
+  - local: /src/templates/weixin-app/.build-only.yml

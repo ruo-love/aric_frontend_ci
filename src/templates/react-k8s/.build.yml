@@ -1,0 +1,38 @@
+# npm install 有缓存方式进行
+.build:
+  stage: build
+  image: node:$NODE_VERSION-slim
+  extends:
+    - .only-branches
+    - .global-cache-update2read
+
+  artifacts:
+    paths:
+      - $FRONTEND_PATH_BUILD
+    expire_in: 1 week
+
+  script:
+    - set -e
+    - echo "npm run build:$CI_COMMIT_REF_SLUG"
+    - npm i --registry=https://repos.saybot.net/repository/alo7npm/ --no-save
+    - npm run build:$CI_COMMIT_REF_SLUG
+
+
+# 以 ci 方式安装，没有 node_modules 缓存了
+.build-npmci:
+  stage: build
+  image: node:$NODE_VERSION-slim
+  extends:
+    - .only-branches
+  artifacts:
+    paths:
+      - $FRONTEND_PATH_BUILD
+    expire_in: 1 week
+  script:
+    - set -e
+    - npm ci --registry=https://repos.saybot.net/repository/alo7npm/
+    - npm run build:$CI_COMMIT_REF_SLUG
+
+# 默认以 build 有缓存方式进行
+build:
+  extends: .build

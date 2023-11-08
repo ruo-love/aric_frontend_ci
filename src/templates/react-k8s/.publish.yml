@@ -1,0 +1,35 @@
+.publish: &PUBLISH
+  extends:
+    - .only-branches
+    - .global-cache-only2read
+  stage: publish
+  image: docker:latest
+  services:
+    - name: docker:18-dind
+      command: ["--registry-mirror", "https://ixceb9no.mirror.aliyuncs.com"]
+  dependencies:
+    - build
+  tags:
+    - docker
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+    DOCKER_DRIVER: overlay2
+    IMAGE_PER_BRANCH_COMMIT: $ALIYUN_CI_REGISTRY_IMAGE/frontend/$FRONTEND_PROJECT_NAME/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHA
+    IMAGE_PER_BRANCH_COMMIT_LATEST: $ALIYUN_CI_REGISTRY_IMAGE/frontend/$FRONTEND_PROJECT_NAME/$CI_COMMIT_REF_NAME:latest
+  script:
+    - set -e
+    - printenv
+    - ls -alh node_modules/@jswork/frontend-ci/
+    - cat node_modules/@jswork/frontend-ci/package.json
+    # - cat /root/.docker/config.json
+    - echo $IMAGE_PER_BRANCH_COMMIT
+    - docker login -u "${ACR_APP_USERNAME}" -p "${ACR_APP_PASSWORD}" "${ALIYUN_CI_REGISTRY_IMAGE}"
+    - docker build -t $IMAGE_PER_BRANCH_COMMIT -t $IMAGE_PER_BRANCH_COMMIT_LATEST --build-arg FRONTEND_PATH_BUILD=$FRONTEND_PATH_BUILD --build-arg FRONTEND_CI_DIR=$FRONTEND_CI_DIR -f $FRONTEND_CI_DIR/ci/docker/Dockerfile .
+    - docker push $IMAGE_PER_BRANCH_COMMIT
+    - docker push $IMAGE_PER_BRANCH_COMMIT_LATEST
+
+publish:
+  <<: *PUBLISH

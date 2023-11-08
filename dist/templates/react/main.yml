@@ -1,0 +1,13 @@
+# Current version is: 1.0.145
+stages:
+  - prepare
+  - build
+  - publish
+  - deploy
+
+include:
+  - local: /dist/templates/react/.vars.yml
+  - local: /dist/templates/react/.prepare.yml
+  - local: /dist/templates/react/.build.yml
+  - local: /dist/templates/react/.publish.yml
+  - local: /dist/templates/react/.deploy.yml

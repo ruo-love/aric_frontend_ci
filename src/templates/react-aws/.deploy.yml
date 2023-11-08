@@ -1,0 +1,26 @@
+.deploy:
+  image: amazon/aws-cli
+  stage: deploy
+  script:
+    - set -e
+    - cd public
+    - aws s3 cp . s3://$bucket_context/ --recursive
+    - echo https://s3.cn-north-1.amazonaws.com.cn/$bucket_context/index.html
+    
+deploy-beta:
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /@beta/
+      - $CI_COMMIT_MESSAGE =~ /@upload-beta/
+  extends: 
+    - .deploy
+    - .vars-beta
+
+deploy-production:
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /@prod/
+      - $CI_COMMIT_MESSAGE =~ /@upload-prod/
+  extends: 
+    - .deploy
+    - .vars-production

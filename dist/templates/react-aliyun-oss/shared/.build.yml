@@ -1,0 +1,49 @@
+.build: &BUILD
+  stage: build
+  image: node:$NODE_VERSION-slim
+  extends:
+    - .global-cache-only2read
+    - .build-before-scripts
+
+  artifacts:
+    paths:
+      - $FRONTEND_PATH_BUILD/
+    expire_in: 1 week
+
+  script:
+    - set -e
+    - unset CI
+    - yarn --version
+    - yarn build:$CI_ENVIRONMENT_NAME || yarn build || echo "Skip build"
+
+build-beta:
+  extends: .build
+  environment:
+    name: beta
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@beta__/
+
+build-staging:
+  extends: .build
+  environment:
+    name: staging
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@staging__/
+
+build-sandbox:
+  extends: .build
+  environment:
+    name: sandbox
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@sandbox__/
+
+build-production:
+  extends: .build
+  environment:
+    name: production
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@production__/

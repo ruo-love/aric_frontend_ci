@@ -1,0 +1,14 @@
+{
+  "git": {
+    "requireCleanWorkingDir": false
+  },
+  "hooks": {
+    "after:bump": [
+      "npm run build"
+    ]
+  },
+  "gitlab": {
+    "release": true,
+    "proxy": "http://127.0.0.1:9090"
+  }
+}

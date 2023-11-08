@@ -1,0 +1,14 @@
+# Current version is: __VERSION__
+stages:
+  - build
+  - publish
+  - deploy
+
+
+include:
+  - local: /src/templates/react-k8s/.vars.yml
+  - local: /src/templates/react-k8s/.build.yml
+  - local: /src/templates/react-k8s/.publish.yml
+  - local: /src/templates/react-k8s/.deploy.yml
+
+

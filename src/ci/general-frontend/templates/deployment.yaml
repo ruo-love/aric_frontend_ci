@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "general-frontend.fullname" . }}
+  labels:
+    app: {{ template "general-frontend.name" . }}
+    chart: {{ template "general-frontend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+{{- if .Values.gitlab.app }}
+    app.gitlab.com/app: {{ .Values.gitlab.app }}
+{{- end }}
+{{- if .Values.gitlab.env }}
+    app.gitlab.com/env: {{ .Values.gitlab.env }}
+{{- end }}
+spec:
+  replicas: {{ .Values.hpa.minReplicas }}
+  selector:
+    matchLabels:
+      app: {{ template "general-frontend.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "general-frontend.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+{{- if .Values.gitlab.app }}
+        app.gitlab.com/app: {{ .Values.gitlab.app }}
+{{- end }}
+{{- if .Values.gitlab.env }}
+        app.gitlab.com/env: {{ .Values.gitlab.env }}
+{{- end }}
+    spec:
+      containers:
+        - name: nginx
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.nginx.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

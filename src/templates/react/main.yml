@@ -1,0 +1,13 @@
+# Current version is: __VERSION__
+stages:
+  - prepare
+  - build
+  - publish
+  - deploy
+
+include:
+  - local: /src/templates/react/.vars.yml
+  - local: /src/templates/react/.prepare.yml
+  - local: /src/templates/react/.build.yml
+  - local: /src/templates/react/.publish.yml
+  - local: /src/templates/react/.deploy.yml

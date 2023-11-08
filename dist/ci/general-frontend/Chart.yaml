@@ -1,0 +1,4 @@
+apiVersion: v1
+description: General Frontend
+name: general-frontend
+version: 0.2.5

@@ -1,0 +1,41 @@
+.deploy:
+  image: abcfy2/aliyun-cli:3.0.121
+  stage: deploy
+  environment:
+    name: beta
+  script:
+    - set -e
+    - cd $FRONTEND_PATH_BUILD
+    - aliyun oss sync . oss://$BUCKET_CONTEXT --force --delete
+
+deploy-beta:
+  extends: .deploy
+  dependencies:
+    - build-beta
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@beta__/
+
+deploy-staging:
+  extends: .deploy
+  dependencies:
+    - build-staging
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@staging__/
+
+deploy-sandbox:
+  extends: .deploy
+  dependencies:
+    - build-sandbox
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@sandbox__/
+
+deploy-production:
+  extends: .deploy
+  dependencies:
+    - build-production
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /__@production__/
